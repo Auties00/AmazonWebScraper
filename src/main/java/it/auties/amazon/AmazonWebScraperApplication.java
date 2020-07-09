@@ -18,13 +18,16 @@ public class AmazonWebScraperApplication {
             "Accept", "text/html",
             "DNT", "1",
             "Connection", "close",
-            "Upgrade-Insecure-Requests", "1"
+            "Upgrade-Insecure-Requests", "1",
+            "Cache-Control", "max-age=0",
+            "rtt", "50",
+            "downlink", "10"
     );
 
+    public static String AGENT =  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36";
     public static boolean DEBUG = true;
-
-
-    private static final int DIVIDER = 3;
+    private static final int TIME = 10;
+    private static final int DIVIDER = 5;
 
     public static void main(String[] args) throws Exception {
         final var scanner = new Scanner(System.in);
@@ -43,10 +46,10 @@ public class AmazonWebScraperApplication {
 
         var executor = Executors.newScheduledThreadPool(products.size() / DIVIDER, Thread::new);
         if(DEBUG) System.out.println("[SchedulerIO] Executor started with " + products.size() / DIVIDER + " threads");
-        var start = System.currentTimeMillis();
+        final var start = System.currentTimeMillis();
 
         for(int x = 0; x < products.size() / DIVIDER; x++){
-            executor.scheduleAtFixedRate(new ExecutorThread(products.subList(x * DIVIDER, (x + 1) * DIVIDER), x, start), 0, 1, TimeUnit.MINUTES);
+            executor.scheduleAtFixedRate(new ExecutorThread(products.subList(x * DIVIDER, (x + 1) * DIVIDER), start, x == 0, x + 1 == products.size() / DIVIDER), 0, TIME, TimeUnit.MINUTES);
         }
     }
 }

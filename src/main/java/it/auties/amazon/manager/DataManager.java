@@ -1,6 +1,6 @@
 package it.auties.amazon.manager;
 
-import it.auties.amazon.model.AmazonItemContainer;
+import it.auties.amazon.model.AmazonItem;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -8,7 +8,7 @@ import java.util.Set;
 
 public class DataManager {
     private static DataManager instance;
-    private final Set<AmazonItemContainer> items;
+    private final Set<AmazonItem> items;
 
     private DataManager() {
         this.items = new HashSet<>();
@@ -22,15 +22,11 @@ public class DataManager {
         return instance;
     }
 
-    public void addItem(AmazonItemContainer item) {
+    public void addItem(AmazonItem item) {
         items.add(item);
     }
 
-    public void removeItem(AmazonItemContainer item) {
-        items.remove(item);
-    }
-
-    public AmazonItemContainer getByName(String name) {
-        return items.stream().filter(e -> e.getName().equals(name)).findFirst().orElse(null);
+    public AmazonItem getByAsin(String asin) {
+        return items.stream().filter(e -> e.getAsin().equals(asin)).findFirst().orElse(null);
     }
 }
