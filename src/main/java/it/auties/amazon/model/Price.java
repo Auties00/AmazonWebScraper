@@ -5,7 +5,7 @@ import lombok.Data;
 
 @AllArgsConstructor
 @Data
-public class Price<E>{
-    private E item;
-    private E shipping;
+public class Price<N>{
+    private final N item;
+    private final N shipping;
 }

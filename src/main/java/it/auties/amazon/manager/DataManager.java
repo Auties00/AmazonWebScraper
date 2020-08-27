@@ -5,7 +5,6 @@ import it.auties.amazon.model.AmazonItem;
 import java.util.HashSet;
 import java.util.Set;
 
-
 public class DataManager {
     private static DataManager instance;
     private final Set<AmazonItem> items;
@@ -14,7 +13,7 @@ public class DataManager {
         this.items = new HashSet<>();
     }
 
-    public static DataManager getInstance() {
+    public synchronized static DataManager getInstance() {
         if (instance == null) {
             instance = new DataManager();
         }
@@ -22,11 +21,11 @@ public class DataManager {
         return instance;
     }
 
-    public void addItem(AmazonItem item) {
+    public synchronized void addItem(AmazonItem item) {
         items.add(item);
     }
 
-    public AmazonItem getByAsin(String asin) {
+    public synchronized AmazonItem getByAsin(String asin) {
         return items.stream().filter(e -> e.getAsin().equals(asin)).findFirst().orElse(null);
     }
 }

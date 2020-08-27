@@ -4,6 +4,7 @@
     <root id="archive" name="AmazonWebScraper.jar.jar">
       <element id="module-output" name="AmazonWebScraper" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jsoup/jsoup/1.13.1/jsoup-1.13.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/SingletonAnnotation.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

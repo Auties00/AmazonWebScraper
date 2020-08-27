@@ -1,26 +1,33 @@
-package it.auties.amazon.extractor;
+package it.auties.amazon.util;
 
 import it.auties.amazon.AmazonWebScraperApplication;
+import it.auties.amazon.logger.AmazonLogger;
 import it.auties.amazon.model.AmazonItem;
 import it.auties.amazon.model.Price;
-import it.auties.amazon.util.Color;
-import it.auties.amazon.util.PriceParser;
-import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.stream.Collectors;
 
 @UtilityClass
-class PriceExtractor {
-    @SneakyThrows
-    void extractUrlFromQuery(AmazonItem item) {
+public class PriceExtractor {
+    public void extractUrlFromQuery(AmazonItem item) throws IOException, URISyntaxException {
         final var document = Jsoup
                 .connect(item.getUrl())
+                .ignoreContentType(true)
                 .userAgent(AmazonWebScraperApplication.AGENT)
                 .headers(AmazonWebScraperApplication.HEADERS)
+                .referrer("http://www.google.com")
+                .timeout(12000)
+                .followRedirects(true)
                 .get();
+
+        if(document.html().contains("Inserisci i caratteri visualizzati nello spazio sottostante")){
+            throw new IOException("Amazon banned the request!");
+        }
 
         final var elementsContainerOptional = document
                 .getElementsByClass("a-section")
@@ -29,7 +36,7 @@ class PriceExtractor {
                 .findFirst();
 
         if (elementsContainerOptional.isEmpty()) {
-            System.out.println(String.format(Color.RED + "[OfferIO] There are no offers available for %s with asin %s", item.getUrl(), item.getAsin()));
+            AmazonLogger.log("[OfferIO] There are no offers available for %s with asin %s".formatted(item.getUrl(), item.getAsin()), Color.RED);
             return;
         }
 
@@ -39,9 +46,9 @@ class PriceExtractor {
         var offerChildren = offer.children().stream().filter(e -> e.tagName().equals("div")).collect(Collectors.toList());
         var priceContainer = offerChildren.get(0).children();
 
-        item.addPrice(new Price<>(PriceParser.parse(priceContainer.get(0).html()), PriceParser.parse(findInnerHtmlForItem(priceContainer.get(priceContainer.size() - 1)))));
         item.setStatus(offerChildren.get(1).child(0).child(0).html());
         item.setSeller(findInnerHtmlForItem(offerChildren.get(2)));
+        item.addPrice(new Price<>(PriceParser.parse(priceContainer.get(0).html()), PriceParser.parse(findInnerHtmlForItem(priceContainer.get(priceContainer.size() - 1)))));
     }
 
     private String findInnerHtmlForItem(Element parent){
