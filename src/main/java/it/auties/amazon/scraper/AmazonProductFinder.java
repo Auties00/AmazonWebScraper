@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static it.auties.amazon.AmazonWebScraperApplication.DEBUG;
 import static it.auties.amazon.AmazonWebScraperApplication.START;
 
 public class AmazonProductFinder{
@@ -85,6 +86,7 @@ public class AmazonProductFinder{
                 PriceExtractor.extractUrlFromQuery(template);
             }
         }catch (Exception e) {
+            if(DEBUG) e.printStackTrace();
             AmazonLogger.info("[AmazonIO] Trying to unblock %s from amazon with error %s".formatted(product, e.getMessage()), Color.RED);
             updateProductsWithQuery(product,isFirst, isLast, tries + 1);
             return;

@@ -58,7 +58,7 @@ public class TelegramMessageHandler {
                     .body();
 
             var style = new InlineKeyboardContainer(List.of(List.of(new InlineKeyboard("🔥 Compralo Ora 🔥", productLink))));
-            final var url = TELEGRAM_URL_FORMAT.formatted(API_TOKEN, CHAT_ID, productImage, URLEncoder.encode(MESSAGE_FORMAT.formatted(productName, status, productPrice / 100D, shippingPrice == 0 ? "+ Spedizione Gratuita Prime" : "+ " + shippingPrice / 100D + "€ di spedizione", productSeller.equals("") ? "Amazon Wherehouse Deals" : productSeller, status, productImage), StandardCharsets.UTF_8), URLEncoder.encode(gson.toJson(style), StandardCharsets.UTF_8));
+            final var url = TELEGRAM_URL_FORMAT.formatted(API_TOKEN, CHAT_ID, productImage, URLEncoder.encode(MESSAGE_FORMAT.formatted(productName, status, productPrice / 100D, shippingPrice == 0 ? "+ Spedizione Gratuita Prime" : "+ " + shippingPrice / 100D + "€ di spedizione", productSeller.equals("") ? "Amazon Warehouse Deals" : productSeller, status, productImage), StandardCharsets.UTF_8), URLEncoder.encode(gson.toJson(style), StandardCharsets.UTF_8));
             var request = HttpRequest
                     .newBuilder()
                     .POST(HttpRequest.BodyPublishers.noBody())
